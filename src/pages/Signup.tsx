@@ -46,19 +46,20 @@ const Signup = () => {
       icon: Pill,
       color: "from-teal-600 to-teal-700",
       description: "Register your pharmacy with us"
-    },
-    doctor: {
-      title: "Doctor Registration",
-      icon: Stethoscope,
-      color: "from-emerald-600 to-emerald-700",
-      description: "Join our healthcare provider network"
-    },
-    customer: {
-      title: "Customer Registration",
-      icon: User,
-      color: "from-cyan-600 to-cyan-700",
-      description: "Create your patient account"
     }
+    // Commented out - not needed for this project
+    // doctor: {
+    //   title: "Doctor Registration",
+    //   icon: Stethoscope,
+    //   color: "from-emerald-600 to-emerald-700",
+    //   description: "Join our healthcare provider network"
+    // },
+    // customer: {
+    //   title: "Customer Registration",
+    //   icon: User,
+    //   color: "from-cyan-600 to-cyan-700",
+    //   description: "Create your patient account"
+    // }
   };
 
   const config = userTypeConfig[userType as keyof typeof userTypeConfig];
@@ -182,42 +183,43 @@ const Signup = () => {
             </div>
           </>
         );
-      case 'doctor':
-        return (
-          <>
-            <div className="space-y-2">
-              <Label htmlFor="licenseNumber">Medical License *</Label>
-              <Input
-                id="licenseNumber"
-                name="licenseNumber"
-                placeholder="Enter medical license number"
-                value={formData.licenseNumber}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="specialization">Specialization *</Label>
-              <Select onValueChange={(value) => handleSelectChange('specialization', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select specialization" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="general">General Medicine</SelectItem>
-                  <SelectItem value="cardiology">Cardiology</SelectItem>
-                  <SelectItem value="dermatology">Dermatology</SelectItem>
-                  <SelectItem value="endocrinology">Endocrinology</SelectItem>
-                  <SelectItem value="gastroenterology">Gastroenterology</SelectItem>
-                  <SelectItem value="neurology">Neurology</SelectItem>
-                  <SelectItem value="oncology">Oncology</SelectItem>
-                  <SelectItem value="pediatrics">Pediatrics</SelectItem>
-                  <SelectItem value="psychiatry">Psychiatry</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </>
-        );
+      // Commented out - not needed for this project
+      // case 'doctor':
+      //   return (
+      //     <>
+      //       <div className="space-y-2">
+      //         <Label htmlFor="licenseNumber">Medical License *</Label>
+      //         <Input
+      //           id="licenseNumber"
+      //           name="licenseNumber"
+      //           placeholder="Enter medical license number"
+      //           value={formData.licenseNumber}
+      //           onChange={handleInputChange}
+      //           required
+      //         />
+      //       </div>
+      //       <div className="space-y-2">
+      //         <Label htmlFor="specialization">Specialization *</Label>
+      //         <Select onValueChange={(value) => handleSelectChange('specialization', value)}>
+      //           <SelectTrigger>
+      //             <SelectValue placeholder="Select specialization" />
+      //           </SelectTrigger>
+      //           <SelectContent>
+      //             <SelectItem value="general">General Medicine</SelectItem>
+      //             <SelectItem value="cardiology">Cardiology</SelectItem>
+      //             <SelectItem value="dermatology">Dermatology</SelectItem>
+      //             <SelectItem value="endocrinology">Endocrinology</SelectItem>
+      //             <SelectItem value="gastroenterology">Gastroenterology</SelectItem>
+      //             <SelectItem value="neurology">Neurology</SelectItem>
+      //             <SelectItem value="oncology">Oncology</SelectItem>
+      //             <SelectItem value="pediatrics">Pediatrics</SelectItem>
+      //             <SelectItem value="psychiatry">Psychiatry</SelectItem>
+      //             <SelectItem value="other">Other</SelectItem>
+      //           </SelectContent>
+      //         </Select>
+      //       </div>
+      //     </>
+      //   );
       default:
         return null;
     }
