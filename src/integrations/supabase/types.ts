@@ -14,7 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      pharmacies: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          id: string
+          license_number: string
+          pharmacy_name: string
+          state: string
+          updated_at: string
+          user_id: string
+          zip_code: string
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          id?: string
+          license_number: string
+          pharmacy_name: string
+          state: string
+          updated_at?: string
+          user_id: string
+          zip_code: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          id?: string
+          license_number?: string
+          pharmacy_name?: string
+          state?: string
+          updated_at?: string
+          user_id?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string
+          updated_at: string
+          user_id: string
+          user_type: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone: string
+          updated_at?: string
+          user_id: string
+          user_type: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string
+          user_type?: string
+        }
+        Relationships: []
+      }
+      suppliers: {
+        Row: {
+          address: string
+          city: string
+          company_name: string
+          created_at: string
+          id: string
+          license_number: string
+          state: string
+          updated_at: string
+          user_id: string
+          zip_code: string
+        }
+        Insert: {
+          address: string
+          city: string
+          company_name: string
+          created_at?: string
+          id?: string
+          license_number: string
+          state: string
+          updated_at?: string
+          user_id: string
+          zip_code: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          company_name?: string
+          created_at?: string
+          id?: string
+          license_number?: string
+          state?: string
+          updated_at?: string
+          user_id?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
