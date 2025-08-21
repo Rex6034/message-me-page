@@ -55,12 +55,58 @@ const POS = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>("cash");
   const [loading, setLoading] = useState(true);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
 
-  // Fetch inventory, categories, and brands
+  // Check authentication first
   useEffect(() => {
-    fetchData();
-  }, []);
+    const checkAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Auth error:', error);
+          toast({
+            title: "Authentication Error",
+            description: "Please log in to access the POS system",
+            variant: "destructive",
+          });
+          navigate("/login/pharmacy");
+          return;
+        }
+
+        if (!session) {
+          toast({
+            title: "Authentication Required",
+            description: "Please log in to access the POS system",
+            variant: "destructive",
+          });
+          navigate("/login/pharmacy");
+          return;
+        }
+
+        setIsAuthenticated(true);
+        fetchData();
+      } catch (error) {
+        console.error('Unexpected auth error:', error);
+        navigate("/login/pharmacy");
+      }
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        setIsAuthenticated(false);
+        navigate("/login/pharmacy");
+      } else if (event === 'SIGNED_IN' && session) {
+        setIsAuthenticated(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate, toast]);
 
   const fetchData = async () => {
     try {
@@ -316,12 +362,14 @@ const POS = () => {
     }
   };
 
-  if (loading) {
+  if (loading || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-          <p className="mt-4 text-lg">Loading POS System...</p>
+          <p className="mt-4 text-lg">
+            {!isAuthenticated ? "Checking authentication..." : "Loading POS System..."}
+          </p>
         </div>
       </div>
     );

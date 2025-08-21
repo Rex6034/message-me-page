@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Building2, Stethoscope, Pill, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const { userType } = useParams<{ userType: string }>();
@@ -50,19 +51,59 @@ const Login = () => {
   const config = userTypeConfig[userType as keyof typeof userTypeConfig];
   const Icon = config?.icon || User;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate(`/dashboard/${userType}`);
+      }
+    };
+    checkAuth();
+  }, [navigate, userType]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simulate login process
-    toast({
-      title: "Login Successful",
-      description: `Welcome back! Redirecting to your ${userType} dashboard...`,
-    });
+    if (!formData.email || !formData.password) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both email and password",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    // Simulate API call delay
-    setTimeout(() => {
-      navigate(`/dashboard/${userType}`);
-    }, 1500);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) {
+        toast({
+          title: "Login Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data.session) {
+        toast({
+          title: "Login Successful",
+          description: `Welcome back! Redirecting to your ${userType} dashboard...`,
+        });
+
+        navigate(`/dashboard/${userType}`);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Login Error",
+        description: error.message || "An unexpected error occurred",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
