@@ -23,23 +23,23 @@ const Index = () => {
       description: "Licensed pharmacies and drugstores",
       color: "bg-gradient-to-br from-teal-600 to-teal-700",
       hoverColor: "hover:from-teal-700 hover:to-teal-800"
-    },
-    {
-      id: "doctor",
-      title: "Doctor",
-      icon: Stethoscope,
-      description: "Medical practitioners and healthcare providers",
-      color: "bg-gradient-to-br from-emerald-600 to-emerald-700",
-      hoverColor: "hover:from-emerald-700 hover:to-emerald-800"
-    },
-    {
-      id: "customer",
-      title: "Customer",
-      icon: User,
-      description: "Patients and general consumers",
-      color: "bg-gradient-to-br from-cyan-600 to-cyan-700",
-      hoverColor: "hover:from-cyan-700 hover:to-cyan-800"
     }
+    // {
+    //   id: "doctor",
+    //   title: "Doctor",
+    //   icon: Stethoscope,
+    //   description: "Medical practitioners and healthcare providers",
+    //   color: "bg-gradient-to-br from-emerald-600 to-emerald-700",
+    //   hoverColor: "hover:from-emerald-700 hover:to-emerald-800"
+    // },
+    // {
+    //   id: "customer",
+    //   title: "Customer",
+    //   icon: User,
+    //   description: "Patients and general consumers",
+    //   color: "bg-gradient-to-br from-cyan-600 to-cyan-700",
+    //   hoverColor: "hover:from-cyan-700 hover:to-cyan-800"
+    // }
   ];
 
   const handleLogin = (userType: string) => {
