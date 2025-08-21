@@ -9,9 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ShoppingCart, Search, Filter, Plus, Minus, Receipt, CreditCard, Banknote, Smartphone } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ShoppingCart, Search, Filter, Plus, Minus, Receipt, CreditCard, Banknote, Smartphone, Package, BarChart3, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import InventoryManager from "@/components/InventoryManager";
+import SalesReports from "@/components/SalesReports";
 
 interface Medicine {
   id: string;
@@ -38,6 +42,7 @@ interface Customer {
 }
 
 const POS = () => {
+  const navigate = useNavigate();
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [filteredMedicines, setFilteredMedicines] = useState<Medicine[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -323,14 +328,63 @@ const POS = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-            <ShoppingCart className="mr-3 h-8 w-8 text-primary" />
-            Pharmacy POS System
-          </h1>
+          <div className="flex items-center">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/dashboard/pharmacy')}
+              className="mr-4"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Dashboard
+            </Button>
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+              <ShoppingCart className="mr-3 h-8 w-8 text-primary" />
+              Pharmacy Management System
+            </h1>
+          </div>
+        </div>
+
+        <Tabs defaultValue="pos" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="pos" className="flex items-center">
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              POS System
+            </TabsTrigger>
+            <TabsTrigger value="inventory" className="flex items-center">
+              <Package className="mr-2 h-4 w-4" />
+              Inventory
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="flex items-center">
+              <BarChart3 className="mr-2 h-4 w-4" />
+              Sales Reports
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="pos" className="space-y-4">
+            {renderPOSContent()}
+          </TabsContent>
+
+          <TabsContent value="inventory">
+            <InventoryManager />
+          </TabsContent>
+
+          <TabsContent value="reports">
+            <SalesReports />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+
+  function renderPOSContent() {
+    return (
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Point of Sale</h2>
           <div className="flex space-x-2">
             <Button variant="outline" onClick={clearCart}>
               Clear Cart
@@ -571,8 +625,8 @@ const POS = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default POS;
