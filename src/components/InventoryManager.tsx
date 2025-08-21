@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, AlertTriangle, Package } from "lucide-react";
@@ -119,42 +119,96 @@ const InventoryManager = () => {
   };
 
   const handleAddInventory = async () => {
+    console.log('handleAddInventory called');
+    console.log('selectedMedicine:', selectedMedicine);
+    console.log('formData:', formData);
+    
     if (!selectedMedicine || !formData.batch_number || !formData.expiry_date) {
+      console.log('Validation failed - missing required fields');
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields",
+        description: "Please select a medicine and fill in batch number and expiry date",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.selling_price || !formData.quantity_in_stock) {
+      console.log('Validation failed - missing selling price or quantity');
+      toast({
+        title: "Missing Information", 
+        description: "Please enter selling price and quantity",
         variant: "destructive",
       });
       return;
     }
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      console.log('Getting user...');
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) {
+        console.error('User error:', userError);
+        throw userError;
+      }
+      if (!user) {
+        console.log('No user found');
+        toast({
+          title: "Authentication Error",
+          description: "Please log in to add inventory",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      const { data: pharmacy } = await supabase
+      console.log('Getting pharmacy for user:', user.id);
+      const { data: pharmacy, error: pharmacyError } = await supabase
         .from('pharmacies')
         .select('id')
         .eq('user_id', user.id)
         .single();
 
-      if (!pharmacy) return;
-
-      const { error } = await supabase
-        .from('pharmacy_inventory')
-        .insert({
-          pharmacy_id: pharmacy.id,
-          medicine_id: selectedMedicine,
-          batch_number: formData.batch_number,
-          expiry_date: formData.expiry_date,
-          purchase_price: parseFloat(formData.purchase_price) || 0,
-          selling_price: parseFloat(formData.selling_price) || 0,
-          quantity_in_stock: parseInt(formData.quantity_in_stock) || 0,
-          minimum_stock_level: parseInt(formData.minimum_stock_level) || 10,
-          supplier_name: formData.supplier_name,
+      if (pharmacyError) {
+        console.error('Pharmacy error:', pharmacyError);
+        throw pharmacyError;
+      }
+      if (!pharmacy) {
+        console.log('No pharmacy found for user');
+        toast({
+          title: "Setup Required",
+          description: "Please complete your pharmacy setup first",
+          variant: "destructive",
         });
+        return;
+      }
 
-      if (error) throw error;
+      console.log('Pharmacy found:', pharmacy.id);
+      console.log('Inserting inventory item...');
+      
+      const inventoryItem = {
+        pharmacy_id: pharmacy.id,
+        medicine_id: selectedMedicine,
+        batch_number: formData.batch_number,
+        expiry_date: formData.expiry_date,
+        purchase_price: parseFloat(formData.purchase_price) || 0,
+        selling_price: parseFloat(formData.selling_price),
+        quantity_in_stock: parseInt(formData.quantity_in_stock),
+        minimum_stock_level: parseInt(formData.minimum_stock_level) || 10,
+        supplier_name: formData.supplier_name || '',
+      };
+      
+      console.log('Inventory item to insert:', inventoryItem);
+
+      const { data: insertedData, error: insertError } = await supabase
+        .from('pharmacy_inventory')
+        .insert(inventoryItem)
+        .select();
+
+      if (insertError) {
+        console.error('Insert error:', insertError);
+        throw insertError;
+      }
+
+      console.log('Successfully inserted:', insertedData);
 
       toast({
         title: "Success",
@@ -172,13 +226,15 @@ const InventoryManager = () => {
         minimum_stock_level: "10",
         supplier_name: "",
       });
-      fetchInventory();
+      
+      console.log('Refreshing inventory...');
+      await fetchInventory();
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding inventory:', error);
       toast({
         title: "Error",
-        description: "Failed to add inventory item",
+        description: error.message || "Failed to add inventory item",
         variant: "destructive",
       });
     }
@@ -224,6 +280,9 @@ const InventoryManager = () => {
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Add Inventory Item</DialogTitle>
+              <DialogDescription>
+                Add a new medicine to your pharmacy inventory
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
