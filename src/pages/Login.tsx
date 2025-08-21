@@ -31,19 +31,20 @@ const Login = () => {
       icon: Pill,
       color: "from-teal-600 to-teal-700",
       description: "Manage your pharmacy operations"
-    },
-    doctor: {
-      title: "Doctor Login",
-      icon: Stethoscope,
-      color: "from-emerald-600 to-emerald-700",
-      description: "Access patient management tools"
-    },
-    customer: {
-      title: "Customer Login",
-      icon: User,
-      color: "from-cyan-600 to-cyan-700",
-      description: "View your prescriptions and orders"
     }
+    // Commented out - not needed for this project
+    // doctor: {
+    //   title: "Doctor Login",
+    //   icon: Stethoscope,
+    //   color: "from-emerald-600 to-emerald-700",
+    //   description: "Access patient management tools"
+    // },
+    // customer: {
+    //   title: "Customer Login",
+    //   icon: User,
+    //   color: "from-cyan-600 to-cyan-700",
+    //   description: "View your prescriptions and orders"
+    // }
   };
 
   const config = userTypeConfig[userType as keyof typeof userTypeConfig];
