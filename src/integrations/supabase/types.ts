@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      medicine_brands: {
+        Row: {
+          created_at: string
+          id: string
+          manufacturer: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          manufacturer?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          manufacturer?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      medicine_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      medicines: {
+        Row: {
+          barcode: string | null
+          brand_id: string | null
+          category_id: string | null
+          created_at: string
+          description: string | null
+          dosage: string | null
+          form: string | null
+          generic_name: string | null
+          id: string
+          name: string
+          requires_prescription: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          barcode?: string | null
+          brand_id?: string | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          dosage?: string | null
+          form?: string | null
+          generic_name?: string | null
+          id?: string
+          name: string
+          requires_prescription?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          barcode?: string | null
+          brand_id?: string | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          dosage?: string | null
+          form?: string | null
+          generic_name?: string | null
+          id?: string
+          name?: string
+          requires_prescription?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medicines_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "medicine_brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medicines_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "medicine_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pharmacies: {
         Row: {
           address: string
@@ -53,6 +161,66 @@ export type Database = {
         }
         Relationships: []
       }
+      pharmacy_inventory: {
+        Row: {
+          batch_number: string | null
+          created_at: string
+          expiry_date: string | null
+          id: string
+          medicine_id: string | null
+          minimum_stock_level: number | null
+          pharmacy_id: string | null
+          purchase_price: number | null
+          quantity_in_stock: number | null
+          selling_price: number | null
+          supplier_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          batch_number?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          medicine_id?: string | null
+          minimum_stock_level?: number | null
+          pharmacy_id?: string | null
+          purchase_price?: number | null
+          quantity_in_stock?: number | null
+          selling_price?: number | null
+          supplier_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          batch_number?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          medicine_id?: string | null
+          minimum_stock_level?: number | null
+          pharmacy_id?: string | null
+          purchase_price?: number | null
+          quantity_in_stock?: number | null
+          selling_price?: number | null
+          supplier_name?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_inventory_medicine_id_fkey"
+            columns: ["medicine_id"]
+            isOneToOne: false
+            referencedRelation: "medicines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pharmacy_inventory_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -88,6 +256,107 @@ export type Database = {
           user_type?: string
         }
         Relationships: []
+      }
+      sale_items: {
+        Row: {
+          created_at: string
+          id: string
+          inventory_id: string | null
+          medicine_name: string
+          quantity: number
+          total_price: number
+          transaction_id: string | null
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inventory_id?: string | null
+          medicine_name: string
+          quantity: number
+          total_price: number
+          transaction_id?: string | null
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inventory_id?: string | null
+          medicine_name?: string
+          quantity?: number
+          total_price?: number
+          transaction_id?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sale_items_inventory_id_fkey"
+            columns: ["inventory_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacy_inventory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sale_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "sales_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_transactions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          discount_amount: number | null
+          id: string
+          payment_method: string | null
+          pharmacy_id: string | null
+          tax_amount: number | null
+          total_amount: number
+          transaction_date: string
+          transaction_number: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          discount_amount?: number | null
+          id?: string
+          payment_method?: string | null
+          pharmacy_id?: string | null
+          tax_amount?: number | null
+          total_amount: number
+          transaction_date?: string
+          transaction_number: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          discount_amount?: number | null
+          id?: string
+          payment_method?: string | null
+          pharmacy_id?: string | null
+          tax_amount?: number | null
+          total_amount?: number
+          transaction_date?: string
+          transaction_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_transactions_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       suppliers: {
         Row: {
@@ -133,7 +402,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_transaction_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
