@@ -30,7 +30,8 @@ const Dashboard = () => {
       color: "from-teal-600 to-teal-700",
       welcomeMessage: "Welcome to your Pharmacy Dashboard",
       features: [
-        "Prescription Management",
+        "POS System",
+        "Prescription Management", 
         "Inventory Tracking",
         "Customer Orders",
         "Sales Reports",
@@ -182,10 +183,16 @@ const Dashboard = () => {
                 </p>
                 <Button 
                   className={`w-full bg-gradient-to-r ${config.color} hover:opacity-90`}
-                  onClick={() => toast({
-                    title: "Feature Coming Soon",
-                    description: `${feature} functionality will be available soon!`,
-                  })}
+                  onClick={() => {
+                    if (feature === "POS System" && userType === "pharmacy") {
+                      navigate("/pos");
+                    } else {
+                      toast({
+                        title: "Feature Coming Soon",
+                        description: `${feature} functionality will be available soon!`,
+                      });
+                    }
+                  }}
                 >
                   Open {feature}
                 </Button>
